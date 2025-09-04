@@ -1,4 +1,4 @@
-# Landing Page Hosting
+# Landing Page Node Hosting
 
 Sebuah halaman landing page hosting dan server backend sederhana yang dibuat menggunakan **Node.js** dan **Express.js**. Proyek ini berfungsi sebagai _proxy_ yang aman untuk mengambil data dari API monitoring eksternal, memfilter data tersebut, dan menyediakannya melalui sebuah endpoint JSON untuk digunakan oleh halaman frontend.
 
