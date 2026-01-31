@@ -6,7 +6,7 @@
     "build:css": "npx @tailwindcss/cli@latest -i ./src/input.css -o ./public/assets/css/main.css --minify"
   },
   "devDependencies": {
-    "@tailwindcss/cli": "^4.1.11",
+    "@tailwindcss/cli": "^4.1.18",
     "tailwindcss": "^4.1.11"
   }
 }
