@@ -320,12 +320,12 @@ curl http://localhost:3000/api/get-status
 **JavaScript (Fetch):**
 
 ```javascript
-fetch("/api/get-status")
+fetch('/api/get-status')
   .then((response) => response.json())
   .then((data) => {
-    console.log("Uptime:", data.uptime);
-    console.log("Response Time:", data.average_response_time, "ms");
-    console.log("Location:", data.location);
+    console.log('Uptime:', data.uptime);
+    console.log('Response Time:', data.average_response_time, 'ms');
+    console.log('Location:', data.location);
   });
 ```
 

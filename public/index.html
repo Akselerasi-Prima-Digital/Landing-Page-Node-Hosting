@@ -5,29 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard: Server Name</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <link rel="stylesheet" href="./assets/css/main.css" />
+    <link rel="stylesheet" href="./assets/css/style.css" />
     <meta name="robots" content="noindex, nofollow" />
 
     <style>
       /* Menambahkan pola grid halus pada body */
       body::before {
-        content: "";
+        content: '';
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
         background-image:
-          linear-gradient(
-            to right,
-            rgba(255, 255, 255, 0.05) 1px,
-            transparent 1px
-          ),
-          linear-gradient(
-            to bottom,
-            rgba(255, 255, 255, 0.05) 1px,
-            transparent 1px
-          );
+          linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
         background-size: 2rem 2rem;
         opacity: 0.5;
         z-index: -1;
@@ -44,9 +36,7 @@
     <div
       class="w-full max-w-lg rounded-2xl border border-white/10 bg-slate-800/20 shadow-2xl backdrop-blur-xl flex flex-col"
     >
-      <header
-        class="flex items-center justify-between p-6 border-b border-white/10"
-      >
+      <header class="flex items-center justify-between p-6 border-b border-white/10">
         <div class="flex items-center space-x-4">
           <div
             class="w-10 h-10 bg-purple-500/20 border border-purple-400/50 rounded-lg flex items-center justify-center"
@@ -78,9 +68,7 @@
             <span
               class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
             ></span>
-            <span
-              class="relative inline-flex rounded-full h-2 w-2 bg-green-500"
-            ></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
           </span>
           <span>Online</span>
         </div>
@@ -160,43 +148,38 @@
         </div>
       </main>
 
-      <footer
-        class="p-6 flex items-center justify-between border-t border-white/10"
-      >
-        <p id="last-checked" class="text-xs text-slate-400">
-          Mengecek status...
-        </p>
+      <footer class="p-6 flex items-center justify-between border-t border-white/10">
+        <p id="last-checked" class="text-xs text-slate-400">Mengecek status...</p>
       </footer>
     </div>
 
     <script>
       // Sedikit JavaScript untuk membuat halaman lebih hidup
-      document.addEventListener("DOMContentLoaded", () => {
+      document.addEventListener('DOMContentLoaded', () => {
         // Memperbarui timestamp
-        const lastCheckedEl = document.getElementById("last-checked");
+        const lastCheckedEl = document.getElementById('last-checked');
         const updateTimestamp = () => {
           const now = new Date();
-          lastCheckedEl.textContent = `Terakhir dicek: ${now.toLocaleTimeString(
-            "id-ID",
-            { timeZone: "Asia/Jakarta" },
-          )}`;
+          lastCheckedEl.textContent = `Terakhir dicek: ${now.toLocaleTimeString('id-ID', {
+            timeZone: 'Asia/Jakarta',
+          })}`;
         };
         updateTimestamp();
       });
 
       async function fetchServerData() {
         // Dapatkan elemen HTML untuk menampilkan data
-        const uptimeElement = document.getElementById("uptime");
-        const responseTimeElement = document.getElementById("response-time");
-        const locationElement = document.getElementById("location"); // <-- Elemen baru
+        const uptimeElement = document.getElementById('uptime');
+        const responseTimeElement = document.getElementById('response-time');
+        const locationElement = document.getElementById('location'); // <-- Elemen baru
 
         // Tampilkan status 'memuat' saat proses fetch dimulai
-        if (uptimeElement) uptimeElement.textContent = "Memuat...";
-        if (responseTimeElement) responseTimeElement.textContent = "Memuat...";
-        if (locationElement) locationElement.textContent = "Memuat..."; // <-- Set status loading
+        if (uptimeElement) uptimeElement.textContent = 'Memuat...';
+        if (responseTimeElement) responseTimeElement.textContent = 'Memuat...';
+        if (locationElement) locationElement.textContent = 'Memuat...'; // <-- Set status loading
 
         try {
-          const response = await fetch("/api/get-status");
+          const response = await fetch('/api/get-status');
 
           // Cek jika respons dari server tidak berhasil (misal: error 404 atau 500)
           if (!response.ok) {
@@ -207,14 +190,13 @@
 
           // Tampilkan data uptime yang sudah diformat
           if (uptimeElement && data.uptime) {
-            const formattedUptime = parseFloat(data.uptime).toFixed(3) + " %";
+            const formattedUptime = parseFloat(data.uptime).toFixed(3) + ' %';
             uptimeElement.textContent = formattedUptime;
           }
 
           // Tampilkan data response time yang sudah dihitung dan diformat
           if (responseTimeElement && data.average_response_time) {
-            const formattedResponseTime =
-              Math.round(data.average_response_time) + " ms";
+            const formattedResponseTime = Math.round(data.average_response_time) + ' ms';
             responseTimeElement.textContent = formattedResponseTime;
           }
 
@@ -223,16 +205,16 @@
             locationElement.textContent = data.location;
           }
         } catch (error) {
-          console.error("Gagal memuat status:", error);
+          console.error('Gagal memuat status:', error);
           // Tampilkan pesan error di UI jika fetch gagal
-          if (uptimeElement) uptimeElement.textContent = "Gagal";
-          if (responseTimeElement) responseTimeElement.textContent = "Gagal";
-          if (locationElement) locationElement.textContent = "Gagal"; // <-- Set status error
+          if (uptimeElement) uptimeElement.textContent = 'Gagal';
+          if (responseTimeElement) responseTimeElement.textContent = 'Gagal';
+          if (locationElement) locationElement.textContent = 'Gagal'; // <-- Set status error
         }
       }
 
       // Jalankan fungsi di atas saat halaman selesai dimuat
-      document.addEventListener("DOMContentLoaded", fetchServerData);
+      document.addEventListener('DOMContentLoaded', fetchServerData);
     </script>
   </body>
 </html>

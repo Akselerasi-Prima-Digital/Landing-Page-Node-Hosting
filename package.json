@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "description": "Frontend build tools for Landing Page Node Hosting",
   "scripts": {
-    "build:css": "npx @tailwindcss/cli@latest -i ./src/input.css -o ./public/assets/css/main.css --minify"
+    "dev": "tailwindcss -i ./src/css/input.css -o ./public/assets/css/style.css --watch",
+    "build:css": "npx @tailwindcss/cli@latest -i ./src/input.css -o ./public/assets/css/style.css --minify",
+    "format": "prettier --write ."
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.1.18",
+    "prettier": "^3.8.1",
     "tailwindcss": "^4.1.11"
   }
 }
