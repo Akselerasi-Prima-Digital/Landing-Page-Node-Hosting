@@ -145,7 +145,6 @@ cp .env.example .env
 ```env
 # Server Configuration
 PORT=3000
-WHITELIST_DOMAIN=http://yourdomain.com
 
 # Third-party Monitoring API
 HT_API_SERVER=https://api.example.com
@@ -155,13 +154,12 @@ HT_MONITOR_ID=your_monitor_id
 
 ### Configuration Options
 
-| Variable           | Description                    | Default            | Required |
-| ------------------ | ------------------------------ | ------------------ | -------- |
-| `PORT`             | Backend server port            | `3000`             | No       |
-| `WHITELIST_DOMAIN` | Allowed domains                | `*` (All if empty) | No       |
-| `HT_API_SERVER`    | Third-party monitoring API URL | -                  | Yes      |
-| `HT_API_KEY`       | API authentication key         | -                  | Yes      |
-| `HT_MONITOR_ID`    | Monitor ID to fetch data for   | -                  | Yes      |
+| Variable        | Description                    | Default | Required |
+| --------------- | ------------------------------ | ------- | -------- |
+| `PORT`          | Backend server port            | `3000`  | No       |
+| `HT_API_SERVER` | Third-party monitoring API URL | -       | Yes      |
+| `HT_API_KEY`    | API authentication key         | -       | Yes      |
+| `HT_MONITOR_ID` | Monitor ID to fetch data for   | -       | Yes      |
 
 ---
 

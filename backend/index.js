@@ -1,41 +1,10 @@
 // Impor package
 const express = require('express');
 const axios = require('axios');
-const cors = require('cors');
 require('dotenv').config(); // Memuat variabel dari file .env
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-// Konfigurasi Whitelist Domain
-const allowedOrigins = process.env.WHITELIST_DOMAIN
-  ? process.env.WHITELIST_DOMAIN // Memisahkan koma dan menghapus spasi
-  : [];
-
-const corsOptions = {
-  origin: (origin, callback) => {
-    // 1. Izinkan request dari server itu sendiri (tidak ada origin) atau local development
-    if (!origin) {
-      return callback(null, true);
-    }
-
-    // 2. Jika WHITELIST_DOMAIN kosong, izinkan semua (Development Mode/Public API)
-    if (allowedOrigins.length === 0) {
-      return callback(null, true);
-    }
-
-    // 3. Cek apakah origin ada di whitelist
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true, // Izinkan cookie/auth header jika perlu
-};
-
-// Gunakan CORS dengan opsi di atas
-app.use(cors(corsOptions));
 
 // Endpoint inilah yang akan dipanggil oleh frontend Anda
 app.get('/api/get-status', async (req, res) => {
