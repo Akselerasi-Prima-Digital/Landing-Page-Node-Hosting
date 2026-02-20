@@ -1,12 +1,12 @@
 <div align="center">
 
-# � Landing Page Node Hosting
+# 🖥️ Landing Page Node Hosting
 
-**A modern server monitoring dashboard with Node.js backend API**
+**A modern server monitoring dashboard with Cloudflare Worker backend API**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
-[![Express.js](https://img.shields.io/badge/Express.js-5.1-lightgrey.svg)](https://expressjs.com/)
+[![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-F38020.svg)](https://workers.cloudflare.com/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.2-06B6D4.svg)](https://tailwindcss.com/)
 
 [Features](#-features) • [Installation](#-installation) • [Deployment](#-deployment) • [API Documentation](#-api-documentation)
 
@@ -32,14 +32,15 @@
 
 ## 🌟 Overview
 
-**Landing Page Node Hosting** is a beautiful server monitoring dashboard that displays real-time server statistics including uptime, response time, and server location. The project consists of a static frontend with glassmorphism design and a Node.js backend API that acts as a proxy to fetch server status from third-party monitoring services.
+**Landing Page Node Hosting** is a beautiful server monitoring dashboard that displays real-time server statistics including uptime, response time, and server location. The project consists of a static frontend with glassmorphism design and a **Cloudflare Worker** backend API that acts as a proxy to fetch server status from [HetrixTools](https://hetrixtools.com/).
 
 ### Key Features
 
 - 🎨 **Modern UI Design**: Glassmorphism with gradient backgrounds and smooth animations
-- � **Real-time Monitoring**: Live server status updates
-- � **Secure API Proxy**: Backend handles API keys securely
-- ⚡ **Fast & Lightweight**: Optimized for performance
+- 🔄 **Real-time Monitoring**: Auto-refresh every 60 seconds
+- 🔒 **Secure API Proxy**: Backend handles API keys securely via Cloudflare Workers
+- ⚡ **Fast & Lightweight**: Edge-deployed with built-in response caching
+- 🌐 **Multi-Server Support**: Monitor any server via query parameter
 
 ---
 
@@ -49,42 +50,51 @@
 
 - **Responsive Dashboard**: Beautiful card-based layout with server metrics
 - **Status Indicators**: Animated ping indicator for online status
-- **Real-time Updates**: Auto-refresh timestamp and data fetching
+- **Auto-Refresh**: Data automatically updates every 60 seconds
+- **Configurable Monitor ID**: Set via `data-monitor-id` attribute (no code change needed)
+- **Accessible**: `aria-hidden` on decorative icons, `<noscript>` fallback
 - **Modern Design**: Dark theme with gradient backgrounds and blur effects
 - **SEO Optimized**: Proper meta tags with `noindex, nofollow` for dashboard pages
 
-### Backend
+### Backend (Cloudflare Worker)
 
-- **API Proxy**: Securely forwards requests to third-party monitoring APIs
-- **Data Processing**: Filters and calculates average response time
-- **Environment Variables**: Secure configuration management
-- **Error Handling**: Comprehensive error responses
+- **API Proxy**: Securely forwards requests to HetrixTools API
+- **Response Caching**: 60-second TTL via Cloudflare Cache API to reduce upstream calls
+- **Wildcard CORS**: Supports exact domain or wildcard subdomain (e.g., `*.example.com`)
+- **Data Processing**: Filters and calculates average response time from all monitoring locations
+- **Error Handling**: Comprehensive error responses with `console.error` logging
 
 ---
 
-## � Project Structure
+## 📂 Project Structure
 
 ```
 Landing-Page-Node-Hosting/
 ├── README.md
 ├── LICENSE
 ├── .gitignore
-├── package.json              ← Frontend build tools (Tailwind CSS)
+├── .prettierrc
+├── package.json                ← Frontend build tools (Tailwind CSS)
 ├── src/
-│   └── input.css             ← Tailwind source file
+│   └── css/
+│       └── input.css           ← Tailwind CSS source + custom styles
 │
-├── public/                   ← Static files (ready to upload to public_html)
-│   ├── index.html            ← Main dashboard page
+├── public/                     ← Static files (deploy to hosting)
+│   ├── index.html              ← Main dashboard page
 │   ├── favicon.ico
 │   ├── robots.txt
 │   └── assets/
-│       └── css/
-│           └── main.css      ← Compiled Tailwind CSS
+│       ├── css/
+│       │   └── style.css       ← Compiled & minified Tailwind CSS
+│       └── js/
+│           └── app.js          ← Dashboard logic (fetch, auto-refresh)
 │
-└── backend/                  ← Node.js API server
-    ├── .env.example          ← Environment variables template
-    ├── package.json          ← Backend dependencies
-    └── index.js              ← Express API server
+└── backend/                    ← Cloudflare Worker API
+    ├── .env.example            ← Environment variables template
+    ├── package.json            ← Wrangler dependency
+    ├── wrangler.jsonc          ← Worker configuration
+    └── src/
+        └── index.js            ← Worker entry point
 ```
 
 ---
@@ -94,7 +104,8 @@ Landing-Page-Node-Hosting/
 | Requirement         | Version  | Required |
 | ------------------- | -------- | -------- |
 | **Node.js**         | ≥ 18.0.0 | ✅ Yes   |
-| **npm** or **yarn** | Latest   | ✅ Yes   |
+| **npm**             | Latest   | ✅ Yes   |
+| **Cloudflare Account** | -     | ✅ Yes   |
 
 ---
 
@@ -107,7 +118,7 @@ git clone https://github.com/Akselerasi-Prima-Digital/Landing-Page-Node-Hosting.
 cd Landing-Page-Node-Hosting
 ```
 
-### 2️⃣ Install Frontend Dependencies (Optional)
+### 2️⃣ Install Frontend Dependencies
 
 Only needed if you want to rebuild Tailwind CSS:
 
@@ -126,80 +137,89 @@ npm install
 
 ## ⚙️ Configuration
 
-### Environment Variables
+### Frontend Configuration
 
-1. **Navigate to backend folder:**
+Set the monitor ID in `public/index.html` on the `<body>` tag:
+
+```html
+<body data-monitor-id="YOUR_MONITOR_ID" ...>
+```
+
+### Backend Environment Variables
+
+Configure via `wrangler.jsonc` (variables) and Cloudflare Dashboard (secrets):
+
+**Variables** (set in `wrangler.jsonc`):
+
+```jsonc
+{
+  "vars": {
+    "HT_API_SERVER": "https://api.hetrixtools.com/v3",
+    "ALLOWED_ORIGIN": "*.yourdomain.com"
+  }
+}
+```
+
+**Secrets** (set via CLI):
 
 ```bash
 cd backend
-```
-
-2. **Create your `.env` file:**
-
-```bash
-cp .env.example .env
-```
-
-3. **Configure the following variables:**
-
-```env
-# Server Configuration
-PORT=3000
-
-# Third-party Monitoring API
-HT_API_SERVER=https://api.example.com
-HT_API_KEY=your_api_key_here
-HT_MONITOR_ID=your_monitor_id
+npx wrangler secret put HT_API_KEY
 ```
 
 ### Configuration Options
 
-| Variable        | Description                    | Default | Required |
-| --------------- | ------------------------------ | ------- | -------- |
-| `PORT`          | Backend server port            | `3000`  | No       |
-| `HT_API_SERVER` | Third-party monitoring API URL | -       | Yes      |
-| `HT_API_KEY`    | API authentication key         | -       | Yes      |
-| `HT_MONITOR_ID` | Monitor ID to fetch data for   | -       | Yes      |
+| Variable         | Type     | Description                                        | Default | Required |
+| ---------------- | -------- | -------------------------------------------------- | ------- | -------- |
+| `HT_API_SERVER`  | Variable | HetrixTools API base URL                           | -       | ✅ Yes   |
+| `HT_API_KEY`     | Secret   | HetrixTools API key                                | -       | ✅ Yes   |
+| `ALLOWED_ORIGIN` | Variable | CORS origin, supports wildcard (e.g. `*.example.com`) | `*`  | No       |
+
+### CORS — Wildcard Subdomain
+
+Set `ALLOWED_ORIGIN` to allow all subdomains of your domain:
+
+```
+ALLOWED_ORIGIN=*.example.com
+```
+
+| Request Origin              | Result       |
+| --------------------------- | ------------ |
+| `https://a.example.com`     | ✅ Allowed   |
+| `https://b.example.com`     | ✅ Allowed   |
+| `https://example.com`       | ✅ Allowed   |
+| `https://evil.com`          | ❌ Blocked   |
 
 ---
 
 ## 👨‍💻 Development
 
-### Frontend Development
-
-If you need to modify Tailwind CSS styles:
+### Frontend — Tailwind CSS
 
 ```bash
-# Build CSS from src/input.css to public/assets/css/main.css
+# Watch mode (auto-rebuild on changes)
+npm run dev
+
+# Build & minify for production
 npm run build:css
+
+# Format code
+npm run format
 ```
 
-### Backend Development
-
-Run the backend API server with hot-reloading:
+### Backend — Cloudflare Worker
 
 ```bash
 cd backend
+
+# Start local development server
 npm run dev
+
+# Deploy to Cloudflare
+npm run deploy
 ```
 
-The server will start at `http://localhost:3000` (or your configured port).
-
-### Testing Locally
-
-1. **Start the backend server:**
-
-   ```bash
-   cd backend
-   npm run dev
-   ```
-
-2. **Open the frontend:**
-   - Open `public/index.html` in your browser, or
-   - Use a local server:
-     ```bash
-     npx serve public
-     ```
+The local dev server provides a URL (e.g. `http://localhost:8787`) with hot-reloading.
 
 ---
 
@@ -207,7 +227,7 @@ The server will start at `http://localhost:3000` (or your configured port).
 
 ### Deploy Frontend (Static Files)
 
-Upload the entire **`public/`** folder to your web hosting's `public_html`:
+Upload the **`public/`** folder to your web hosting:
 
 ```
 public_html/
@@ -215,84 +235,36 @@ public_html/
 ├── favicon.ico
 ├── robots.txt
 └── assets/
-    └── css/
-        └── main.css
+    ├── css/
+    │   └── style.css
+    └── js/
+        └── app.js
 ```
 
 **Steps:**
 
-1. Connect to your hosting via FTP/SFTP or File Manager
-2. Upload all contents from the `public/` folder to `public_html/`
-3. Your dashboard will be accessible at `https://yourdomain.com/`
+1. Build CSS: `npm run build:css`
+2. Upload all contents from `public/` to your hosting's `public_html/`
+3. Dashboard accessible at `https://yourdomain.com/`
 
----
+### Deploy Backend (Cloudflare Worker)
 
-### Deploy Single Domain (Frontend + Backend)
+```bash
+cd backend
 
-Jika ingin deploy di **satu domain/hosting saja** (misal cPanel Node.js atau VPS):
+# First time: login to Cloudflare
+npx wrangler login
 
-1. **Upload seluruh folder project** (kecuali `node_modules` dan `src`).
-   Struktur di hosting:
-   ```
-   project-root/
-   ├── backend/
-   │   ├── index.js
-   │   └── package.json
-   └── public/
-       ├── index.html
-       └── ...
-   ```
-2. **Setup Node.js App:**
-   - Application Root: `backend`
-   - Application Startup File: `index.js`
-   - Run `npm install` (di dalam folder backend)
-3. **Akses Domain:**
-   - Buka `domain.com` -> akan muncul landing page (karena `index.js` melayani folder `../public`).
-   - API tetap di `domain.com/api/get-status`.
+# Set API key as secret
+npx wrangler secret put HT_API_KEY
 
----
+# Deploy
+npm run deploy
+```
 
-### Deploy Backend (Node.js API)
+The Worker will be available at `https://landing-page-node-hosting.<your-subdomain>.workers.dev`.
 
-#### Option 1: Same Server (Subdirectory)
-
-If your hosting supports Node.js applications:
-
-1. **Upload the `backend/` folder** to your server (e.g., `/home/user/backend/`)
-
-2. **Install production dependencies:**
-
-   ```bash
-   cd backend
-   npm install --production
-   ```
-
-3. **Configure environment variables:**
-
-   ```bash
-   nano .env  # or edit via file manager
-   ```
-
-4. **Start the server:**
-
-   ```bash
-   npm start
-   ```
-
-5. **Use a process manager** (recommended):
-   ```bash
-   npm install -g pm2
-   pm2 start index.js --name "landing-page-node-hosting"
-   pm2 save
-   pm2 startup
-   ```
-
-#### Option 2: Separate Server/Subdomain
-
-1. Set up a subdomain (e.g., `api.yourdomain.com`)
-2. Deploy the backend to this subdomain
-3. Update CORS settings if needed
-4. Update frontend to point to the API subdomain
+> **Note**: Make sure the frontend's API call (`/api/get-status`) points to the correct Worker URL if hosted on different domains.
 
 ---
 
@@ -301,10 +273,8 @@ If your hosting supports Node.js applications:
 ### Base URL
 
 ```
-http://localhost:3000
+https://your-worker.workers.dev
 ```
-
----
 
 ### Get Server Status
 
@@ -313,10 +283,14 @@ Retrieves server uptime, average response time, and location.
 #### Request
 
 ```http
-GET /api/get-status
+GET /api/get-status?monitor=MONITOR_ID
 ```
 
-#### Response
+| Parameter  | Type   | Required | Description                    |
+| ---------- | ------ | -------- | ------------------------------ |
+| `monitor`  | string | ✅ Yes   | HetrixTools monitor ID         |
+
+#### Success Response (200)
 
 ```json
 {
@@ -326,41 +300,48 @@ GET /api/get-status
 }
 ```
 
-#### Response Fields
-
 | Field                   | Type   | Description                           |
 | ----------------------- | ------ | ------------------------------------- |
 | `uptime`                | string | Server uptime percentage              |
 | `average_response_time` | number | Average response time in milliseconds |
 | `location`              | string | Server location (City, Country)       |
 
+#### Error Responses
+
+| Status | Message                                      |
+| ------ | -------------------------------------------- |
+| 400    | Parameter "monitor" wajib diisi              |
+| 404    | Data monitor atau lokasi tidak ditemukan      |
+| 500    | HT_API_KEY belum dikonfigurasi               |
+| 502    | HetrixTools API error                        |
+
 #### Example Usage
 
 **cURL:**
 
 ```bash
-curl http://localhost:3000/api/get-status
+curl "https://your-worker.workers.dev/api/get-status?monitor=YOUR_MONITOR_ID"
 ```
 
 **JavaScript (Fetch):**
 
 ```javascript
-fetch('/api/get-status')
-  .then((response) => response.json())
-  .then((data) => {
-    console.log('Uptime:', data.uptime);
-    console.log('Response Time:', data.average_response_time, 'ms');
-    console.log('Location:', data.location);
-  });
+const res = await fetch('/api/get-status?monitor=YOUR_MONITOR_ID');
+const data = await res.json();
+
+console.log('Uptime:', data.uptime);
+console.log('Response Time:', data.average_response_time, 'ms');
+console.log('Location:', data.location);
 ```
 
-#### Error Response
+#### Cache Behavior
 
-```json
-{
-  "message": "Gagal mengambil data"
-}
-```
+Responses include an `X-Cache` header:
+
+| Value  | Description                          |
+| ------ | ------------------------------------ |
+| `HIT`  | Served from cache                    |
+| `MISS` | Fresh response, cached for 60 seconds |
 
 ---
 
@@ -368,47 +349,47 @@ fetch('/api/get-status')
 
 ### Frontend
 
-| Technology             | Version | Purpose           |
-| ---------------------- | ------- | ----------------- |
-| **HTML5**              | -       | Structure         |
-| **Tailwind CSS**       | 4.1.11  | Styling framework |
-| **Vanilla JavaScript** | -       | Client-side logic |
+| Technology             | Version | Purpose                     |
+| ---------------------- | ------- | --------------------------- |
+| **HTML5**              | -       | Structure                   |
+| **Tailwind CSS**       | 4.2     | Utility-first CSS framework |
+| **Vanilla JavaScript** | -       | Client-side logic           |
 
 ### Backend
 
-| Technology  | Version | Purpose                   |
-| ----------- | ------- | ------------------------- |
-| **Node.js** | ≥18.0.0 | Runtime environment       |
-| **Express** | 5.1.0   | Web framework             |
-| **Axios**   | 1.11.0  | HTTP client for API calls |
-| **dotenv**  | 17.2.1  | Environment management    |
+| Technology              | Version | Purpose                     |
+| ----------------------- | ------- | --------------------------- |
+| **Cloudflare Workers**  | -       | Edge serverless runtime     |
+| **Wrangler**            | 4.67+   | Cloudflare dev/deploy CLI   |
 
 ### Development Tools
 
-| Technology           | Version | Purpose                 |
-| -------------------- | ------- | ----------------------- |
-| **Nodemon**          | 3.1.10  | Auto-restart dev server |
-| **@tailwindcss/cli** | 4.1.11  | CSS build tool          |
+| Technology           | Version | Purpose              |
+| -------------------- | ------- | -------------------- |
+| **@tailwindcss/cli** | 4.2     | CSS build tool       |
+| **Prettier**         | 3.8+    | Code formatter       |
 
 ---
 
 ## 🎨 Design Features
 
-- **Glassmorphism**: Modern blur effect with backdrop filters
+- **Glassmorphism**: Modern blur effect with `backdrop-blur-xl`
 - **Gradient Backgrounds**: Purple and indigo color scheme
 - **Animated Elements**: Ping animation for status indicator
-- **Grid Pattern**: Subtle background pattern for depth
-- **Responsive Layout**: Mobile-first design approach
+- **Grid Pattern**: Subtle CSS background pattern for depth
+- **Responsive Layout**: Mobile-first with `md:grid-cols-2`
 - **SVG Icons**: Heroicons for clean vector graphics
 
 ---
 
 ## 🔒 Security Notes
 
-- ✅ API keys are stored in `.env` and never exposed to frontend
-- ✅ Backend acts as a proxy to hide third-party API credentials
-- ✅ `.env` is in `.gitignore` to prevent accidental commits
+- ✅ API keys stored as Cloudflare secrets (never exposed to frontend)
+- ✅ Worker acts as a proxy to hide third-party API credentials
+- ✅ CORS configurable with wildcard subdomain support
+- ✅ Response caching reduces upstream API exposure
 - ✅ Dashboard has `noindex, nofollow` meta tags
+- ✅ `robots.txt` disallows all crawlers
 
 ---
 
@@ -421,13 +402,13 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ## 📬 Contact & Support
 
 - **GitHub**: [Akselerasi Prima Digital](https://github.com/Akselerasi-Prima-Digital)
-- **Repository**: [Landing-Page-Node-Hosting](https://github.com/reynaldiarya/Landing-Page-Node-Hosting)
+- **Repository**: [Landing-Page-Node-Hosting](https://github.com/Akselerasi-Prima-Digital/Landing-Page-Node-Hosting)
 
 ---
 
 <div align="center">
 
-**Built with ❤️ using Node.js and modern web technologies**
+**Built with ❤️ using Cloudflare Workers and modern web technologies**
 
 If this project helped you, consider giving it a ⭐!
 
