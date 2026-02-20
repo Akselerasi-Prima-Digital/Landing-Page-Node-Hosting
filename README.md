@@ -101,11 +101,11 @@ Landing-Page-Node-Hosting/
 
 ## 📋 Prerequisites
 
-| Requirement         | Version  | Required |
-| ------------------- | -------- | -------- |
-| **Node.js**         | ≥ 18.0.0 | ✅ Yes   |
-| **npm**             | Latest   | ✅ Yes   |
-| **Cloudflare Account** | -     | ✅ Yes   |
+| Requirement            | Version  | Required |
+| ---------------------- | -------- | -------- |
+| **Node.js**            | ≥ 18.0.0 | ✅ Yes   |
+| **npm**                | Latest   | ✅ Yes   |
+| **Cloudflare Account** | -        | ✅ Yes   |
 
 ---
 
@@ -142,7 +142,7 @@ npm install
 Set the monitor ID in `public/index.html` on the `<body>` tag:
 
 ```html
-<body data-monitor-id="YOUR_MONITOR_ID" ...>
+<body data-monitor-id="YOUR_MONITOR_ID" ...></body>
 ```
 
 ### Backend Environment Variables
@@ -155,8 +155,8 @@ Configure via `wrangler.jsonc` (variables) and Cloudflare Dashboard (secrets):
 {
   "vars": {
     "HT_API_SERVER": "https://api.hetrixtools.com/v3",
-    "ALLOWED_ORIGIN": "*.yourdomain.com"
-  }
+    "ALLOWED_ORIGIN": "*.yourdomain.com",
+  },
 }
 ```
 
@@ -169,11 +169,11 @@ npx wrangler secret put HT_API_KEY
 
 ### Configuration Options
 
-| Variable         | Type     | Description                                        | Default | Required |
-| ---------------- | -------- | -------------------------------------------------- | ------- | -------- |
-| `HT_API_SERVER`  | Variable | HetrixTools API base URL                           | -       | ✅ Yes   |
-| `HT_API_KEY`     | Secret   | HetrixTools API key                                | -       | ✅ Yes   |
-| `ALLOWED_ORIGIN` | Variable | CORS origin, supports wildcard (e.g. `*.example.com`) | `*`  | No       |
+| Variable         | Type     | Description                                           | Default | Required |
+| ---------------- | -------- | ----------------------------------------------------- | ------- | -------- |
+| `HT_API_SERVER`  | Variable | HetrixTools API base URL                              | -       | ✅ Yes   |
+| `HT_API_KEY`     | Secret   | HetrixTools API key                                   | -       | ✅ Yes   |
+| `ALLOWED_ORIGIN` | Variable | CORS origin, supports wildcard (e.g. `*.example.com`) | `*`     | No       |
 
 ### CORS — Wildcard Subdomain
 
@@ -183,12 +183,12 @@ Set `ALLOWED_ORIGIN` to allow all subdomains of your domain:
 ALLOWED_ORIGIN=*.example.com
 ```
 
-| Request Origin              | Result       |
-| --------------------------- | ------------ |
-| `https://a.example.com`     | ✅ Allowed   |
-| `https://b.example.com`     | ✅ Allowed   |
-| `https://example.com`       | ✅ Allowed   |
-| `https://evil.com`          | ❌ Blocked   |
+| Request Origin          | Result     |
+| ----------------------- | ---------- |
+| `https://a.example.com` | ✅ Allowed |
+| `https://b.example.com` | ✅ Allowed |
+| `https://example.com`   | ✅ Allowed |
+| `https://evil.com`      | ❌ Blocked |
 
 ---
 
@@ -286,9 +286,9 @@ Retrieves server uptime, average response time, and location.
 GET /api/get-status?monitor=MONITOR_ID
 ```
 
-| Parameter  | Type   | Required | Description                    |
-| ---------- | ------ | -------- | ------------------------------ |
-| `monitor`  | string | ✅ Yes   | HetrixTools monitor ID         |
+| Parameter | Type   | Required | Description            |
+| --------- | ------ | -------- | ---------------------- |
+| `monitor` | string | ✅ Yes   | HetrixTools monitor ID |
 
 #### Success Response (200)
 
@@ -308,12 +308,12 @@ GET /api/get-status?monitor=MONITOR_ID
 
 #### Error Responses
 
-| Status | Message                                      |
-| ------ | -------------------------------------------- |
-| 400    | Parameter "monitor" wajib diisi              |
-| 404    | Data monitor atau lokasi tidak ditemukan      |
-| 500    | HT_API_KEY belum dikonfigurasi               |
-| 502    | HetrixTools API error                        |
+| Status | Message                                  |
+| ------ | ---------------------------------------- |
+| 400    | Parameter "monitor" wajib diisi          |
+| 404    | Data monitor atau lokasi tidak ditemukan |
+| 500    | HT_API_KEY belum dikonfigurasi           |
+| 502    | HetrixTools API error                    |
 
 #### Example Usage
 
@@ -338,9 +338,9 @@ console.log('Location:', data.location);
 
 Responses include an `X-Cache` header:
 
-| Value  | Description                          |
-| ------ | ------------------------------------ |
-| `HIT`  | Served from cache                    |
+| Value  | Description                           |
+| ------ | ------------------------------------- |
+| `HIT`  | Served from cache                     |
 | `MISS` | Fresh response, cached for 60 seconds |
 
 ---
@@ -357,17 +357,17 @@ Responses include an `X-Cache` header:
 
 ### Backend
 
-| Technology              | Version | Purpose                     |
-| ----------------------- | ------- | --------------------------- |
-| **Cloudflare Workers**  | -       | Edge serverless runtime     |
-| **Wrangler**            | 4.67+   | Cloudflare dev/deploy CLI   |
+| Technology             | Version | Purpose                   |
+| ---------------------- | ------- | ------------------------- |
+| **Cloudflare Workers** | -       | Edge serverless runtime   |
+| **Wrangler**           | 4.67+   | Cloudflare dev/deploy CLI |
 
 ### Development Tools
 
-| Technology           | Version | Purpose              |
-| -------------------- | ------- | -------------------- |
-| **@tailwindcss/cli** | 4.2     | CSS build tool       |
-| **Prettier**         | 3.8+    | Code formatter       |
+| Technology           | Version | Purpose        |
+| -------------------- | ------- | -------------- |
+| **@tailwindcss/cli** | 4.2     | CSS build tool |
+| **Prettier**         | 3.8+    | Code formatter |
 
 ---
 

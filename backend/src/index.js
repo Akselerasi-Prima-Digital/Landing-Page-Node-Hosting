@@ -26,10 +26,7 @@ function resolveOrigin(allowedPattern, requestOrigin) {
     try {
       const originUrl = new URL(requestOrigin);
       // Cocokkan: hostname harus diakhiri '.example.com' atau sama persis 'example.com'
-      if (
-        originUrl.hostname === baseDomain ||
-        originUrl.hostname.endsWith('.' + baseDomain)
-      ) {
+      if (originUrl.hostname === baseDomain || originUrl.hostname.endsWith('.' + baseDomain)) {
         return requestOrigin; // Kirim origin request yang cocok
       }
     } catch {
@@ -74,7 +71,7 @@ async function handleGetStatus(url, env, allowedOrigin) {
     return jsonResponse(
       { message: 'Parameter "monitor" wajib diisi. Contoh: /api/get-status?monitor=MONITOR_ID' },
       400,
-      allowedOrigin,
+      allowedOrigin
     );
   }
 
@@ -109,7 +106,7 @@ async function handleGetStatus(url, env, allowedOrigin) {
       return jsonResponse(
         { message: 'HT_API_KEY belum dikonfigurasi. Jalankan: npx wrangler secret put HT_API_KEY' },
         500,
-        allowedOrigin,
+        allowedOrigin
       );
     }
 
@@ -126,7 +123,7 @@ async function handleGetStatus(url, env, allowedOrigin) {
       return jsonResponse(
         { message: `HetrixTools API error: ${response.status}` },
         response.status >= 500 ? 502 : response.status,
-        allowedOrigin,
+        allowedOrigin
       );
     }
 
@@ -177,11 +174,19 @@ async function handleGetStatus(url, env, allowedOrigin) {
         },
       });
     } else {
-      return jsonResponse({ message: 'Data monitor atau lokasi tidak ditemukan.' }, 404, allowedOrigin);
+      return jsonResponse(
+        { message: 'Data monitor atau lokasi tidak ditemukan.' },
+        404,
+        allowedOrigin
+      );
     }
   } catch (error) {
     console.error('Gagal mengambil data dari HetrixTools API:', error);
-    return jsonResponse({ message: 'Gagal mengambil data dari HetrixTools API' }, 500, allowedOrigin);
+    return jsonResponse(
+      { message: 'Gagal mengambil data dari HetrixTools API' },
+      500,
+      allowedOrigin
+    );
   }
 }
 

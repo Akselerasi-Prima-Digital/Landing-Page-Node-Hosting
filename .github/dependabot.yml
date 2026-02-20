@@ -1,18 +1,18 @@
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "Asia/Jakarta"
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+      timezone: 'Asia/Jakarta'
     groups:
       npm-production:
-        dependency-type: "production"
+        dependency-type: 'production'
         patterns:
-          - "*"
+          - '*'
       npm-development:
-        dependency-type: "development"
+        dependency-type: 'development'
         patterns:
-          - "*"
+          - '*'
